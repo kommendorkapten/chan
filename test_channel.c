@@ -2,6 +2,7 @@
 #include <sys/time.h>
 #include <pthread.h>
 #include <errno.h>
+#include <scut.h>
 #include "chan.h"
 
 struct wrk
@@ -21,105 +22,20 @@ static int test_two_thr(void);
 
 int main(void)
 {
-	int ret = 0;
+	int ret;
 
-	printf("test_read_write: ");
-	if (test_read_write()) 
-	{
-		ret = 1;
-		printf("\t\tFailed\n");
-	}
-	else 
-	{
-		printf("\t\tOk\n");
-	}
-	
-	if (ret)
-	{
-		return ret;
-	}
+        scut_create("Channel test");
 
-	printf("test_close_channel: ");
-	if (test_close_channel())
-	{
-		ret = 1;
-		printf("\t\tFailed\n");
-	}
-	else 
-	{
-		printf("\t\tOk\n");		
-	}
+	SCUT_ADD(test_read_write);
+	SCUT_ADD(test_close_channel);
+	SCUT_ADD(test_timeout);
+	SCUT_ADD(test_one_select);
+	SCUT_ADD(test_two_select);
+	SCUT_ADD(test_one_thr);
+	SCUT_ADD(test_two_thr);
 
-	if (ret)
-	{
-		return ret;
-	}
-
-	printf("test_timeout:\t");
-	if (test_timeout())
-	{
-		ret = 1;
-		printf("\t\tFailed\n");
-	}
-	else
-	{
-		printf("\t\tOk\n");		
-	}
-
-	if (ret)
-	{
-		return ret;
-	}
-
-	printf("test_one_select: ");
-	if (test_one_select())
-	{
-		ret = 1;
-		printf("\t\tFailed\n");
-	}
-	else
-	{
-		printf("\t\tOk\n");		
-	}
-
-	if (ret)
-	{
-		return ret;
-	}
-
-	printf("test_two_select: ");
-	if (test_two_select())
-	{
-		ret = 1;
-		printf("\t\tFailed\n");
-	}
-	else
-	{
-		printf("\t\tOk\n");		
-	}
-
-	printf("test_one_thr:\t");
-	if (test_one_thr())
-	{
-		ret = 1;
-		printf("\t\tFailed\n");
-	}
-	else
-	{
-		printf("\t\tOk\n");		
-	}
-
-	printf("test_two_thr:\t");
-	if (test_two_thr())
-	{
-		ret = 1;
-		printf("\t\tFailed\n");
-	}
-	else
-	{
-		printf("\t\tOk\n");		
-	}
-
+        ret = scut_run(0);
+                
 	return ret;
 }
 
@@ -371,6 +287,10 @@ static void* thr_count_to_close(void* a)
 		{
 			count++;
 		}
+                else if (ret == EAGAIN) 
+                {
+                        continue;
+                }
 		else if (ret == EBADF)
 		{
 			break;

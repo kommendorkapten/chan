@@ -57,7 +57,6 @@ void* thr_wrk_consume(void* a)
 		}
 		else if (ret == EBADF)
 		{
-			//printf("[%d]Channel is closed\n", w->me);
 			break;
 		}
 		else if (ret == EAGAIN)
@@ -109,7 +108,7 @@ void bench_consume(int count)
 			printf("Write response: %d@%d\n", ret, i);
 		}
 	}
-	//printf("Closing channel\n");
+
 	chan_close(c);
 	for (int i = 0; i < count; i++)
 	{
@@ -118,7 +117,7 @@ void bench_consume(int count)
 
 		pthread_join(thr[i], &t_ret);
 		tmp = (unsigned int)(long)t_ret;
-		//printf("Thread %d read %d msg\n", i, tmp);
+
 		thr_msg += tmp;
 	}
 	gettimeofday(&ts, NULL);
