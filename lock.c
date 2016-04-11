@@ -1,6 +1,6 @@
 #include "lock.h"
 #include <stdlib.h>
-#ifdef NB_LOCK
+#ifdef LOCK_FREE
 # include <atomic.h>
 # include <stdint.h>
 #else
@@ -9,7 +9,7 @@
 
 struct lock_s
 {
-#ifdef NB_LOCK
+#ifdef LOCK_FREE
         uint32_t l;
 #else
         pthread_mutex_t l;
@@ -21,7 +21,7 @@ lock lk_create(void)
 {
         lock l = malloc(sizeof(struct lock_s));
 
-#ifdef NB_LOCK
+#ifdef LOCK_FREE
         l->l = 0;
 #else
         pthread_mutex_init(&l->l, NULL);
@@ -32,7 +32,7 @@ lock lk_create(void)
 
 int lk_lock(lock l)
 {
-#ifdef NB_LOCK
+#ifdef LOCK_FREE
         for (;;)
         {
                 int r = atomic_cas_32(&l->l, 0, 1);
@@ -50,7 +50,7 @@ int lk_lock(lock l)
 
 void lk_unlock(lock l)
 {
-#ifdef NB_LOCK
+#ifdef LOCK_FREE
         l->l = 0;
 #else
 	pthread_mutex_unlock(&l->l);
@@ -59,7 +59,7 @@ void lk_unlock(lock l)
 
 void lk_destroy(lock l)
 {
-#ifdef NB_LOCK
+#ifdef LOCK_FREE
 #else
         pthread_mutex_destroy(&l->l);
 #endif        
