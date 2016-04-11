@@ -6,13 +6,12 @@ UNAME=$(shell uname -s)
 # Default to c99 on Solaris
 ifeq ($(UNAME), SunOS)
 CC=c99
+CFLAGS += -D_POSIX_C_SOURCE=200112L
 endif
 
 # Configure stuff based on compiler
 ifeq ($(CC), gcc)
 CFLAGS += -W -Wall -pedantic -std=c99
-else ifeq ($(CC), c99)
-CFLAGS += -D_POSIX_C_SOURCE=200112L
 endif
 
 # Configure based on OS
@@ -47,6 +46,9 @@ dir: $(DIRS)
 $(DIRS):
 	mkdir $(DIRS)
 
+test: $(exe)
+	$(exe)
+
 $(exe): test_channel.c $(OBJS)
 	$(CC) $(CFLAGS) -o $@ test_channel.c $(OBJS) $(LFLAGS)
 
@@ -60,7 +62,7 @@ $(OBJDIR)/%.o: %.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJDIR)/*.o $(exe)
+	rm -rf $(OBJDIR)/*.o $(exe) $(bench)
 
 distclean: 
 	rm -r $(DIRS)
