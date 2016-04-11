@@ -9,8 +9,7 @@
 #include <signal.h>
 
 // TODO
-// Mutex real implementation
-// Better channel handling (remove closed etc)
+// Better channel handling on select (remove closed etc)
 
 void* fun_fan_in(void*);
 void* fun_fan_out(void*);
