@@ -43,7 +43,7 @@ int chan_select(struct chan** c,
 {
 	struct pollfd pfd[nc];
 	int ready;
-	int result = -1;
+	int result = EAGAIN;
 	unsigned int added = nc;
 
 	for (unsigned int i = 0; i < nc; ++i)

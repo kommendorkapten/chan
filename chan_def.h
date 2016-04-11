@@ -1,6 +1,7 @@
 #ifndef __CHAN_DEF_H__
 #define __CHAN_DEF_H__
 
+#include <pthread.h>
 #ifdef MT_SAFE
 # include "lock.h"
 #endif
@@ -10,7 +11,8 @@
 
 struct chan
 {
-	int fds[2];
+        pthread_t* fan_in;
+        int fds[2];
 #ifdef MT_SAFE
         lock l;
 #endif
