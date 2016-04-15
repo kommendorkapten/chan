@@ -149,6 +149,8 @@ int main(void)
                 }
         }
         chan_destroy(c);
+        chan_destroy(tgt[0]);
+        chan_destroy(tgt[1]);
         printf("Read %d messages\n", num_msg);
         return 0;
 }
