@@ -1,4 +1,4 @@
-# Thread safe inter process channel implementation for C
+# Thread safe inter-process channel implementation for C
 
 ## Building
 
@@ -95,7 +95,7 @@ Channel was closed
 Read 100 messages
 ``` 
 
-## Example program with fan out and select
+## Example program with fan-out and select
 
 Creates a source channel, with two target channels that both receives
 the messages sent to the source channel. Read from both target
