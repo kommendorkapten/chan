@@ -5,6 +5,7 @@ struct lock_s;
 typedef struct lock_s* lock;
 
 lock lk_create(void);
+
 /**
  * @return 0 if the lock was taken. Non-zero otherwise.
  */

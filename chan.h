@@ -11,13 +11,13 @@ struct chan_msg
 struct chan;
 
 /**
- * Create a uni directona channel.
+ * Create a uni directonal channel.
  * @return the channel.
  */
 extern struct chan* chan_create(void);
 
 /**
- * Destroyes the channel.
+ * Destroye the channel.
  * Any behavior of subsequent read/write is undefined.
  */
 extern void chan_destroy(struct chan*);

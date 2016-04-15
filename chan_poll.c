@@ -14,7 +14,7 @@ int chan_read(struct chan* c, struct chan_msg* m, int timeout)
 	pfd.fd = c->fds[READ_FD];
 	pfd.events = POLLIN | POLLHUP;
 
-        // Fixme: Update timeout if poll is restarted
+        // TODO Update timeout if poll is restarted
         ready = poll(&pfd, 1, timeout);
         if (ready < 0)
         {
