@@ -8,8 +8,7 @@
 #include <errno.h>
 #include <signal.h>
 
-// TODO
-// Better channel handling on select (remove closed etc)
+/* TODO: Better channel handling on select (remove closed etc) */
 
 void* fun_fan_in(void*);
 void* fun_fan_out(void*);
@@ -56,7 +55,7 @@ void chan_close(struct chan* c)
 
         if (c->fan_in) 
         {
-                // Kill fan in thread
+                /* Kill fan in thread */
                 pthread_kill(*c->fan_in, SIGUSR1);
                 pthread_join(*c->fan_in, NULL);
 
@@ -113,12 +112,12 @@ struct chan* chan_fan_in(struct chan** srcs, unsigned int num)
         struct chan** chans = malloc((num + 2) * sizeof(struct chan*));
 
         chans[0] = ret;
-        // Make a copy to aoid any race conditions
+        /* Make a copy to aoid any race conditions */
         memcpy(chans + 1, srcs, num * sizeof(struct chan*));
         chans[num + 1] = NULL;
 
         ret->fan_in = malloc(sizeof(pthread_t));
-        // Thread must be joinable
+        /* Thread must be joinable */
         if (pthread_create(ret->fan_in, NULL, &fun_fan_in, chans))
         {
                 chan_destroy(ret);
@@ -141,14 +140,14 @@ int chan_fan_out(struct chan** tgts, unsigned int num, struct chan* src)
         memcpy(chans + 1, tgts, num * sizeof(struct chan*));
         chans[num + 1] = NULL;
 
-        // Thread shall not be joinable
+        /* Thread shall not be joinable */
         if (pthread_attr_init(&attr)) {
                 free(chans);
                 ret = 1;
                 return  ret;
         }
-        // pthread_attr_setdetachstate can only fail on EINVAL and the values
-        // here are quite under control, so skip error check.
+        /* pthread_attr_setdetachstate can only fail on EINVAL and the values
+           here are quite under control, so skip error check. */
         pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
         if (pthread_create(&thr, &attr, &fun_fan_out, chans))
         {
@@ -170,7 +169,7 @@ int read_msg(struct chan* c, struct chan_msg* m)
         if (lk_lock(c->l))
 	{
 		perror("chan_read::lock");
-		// FIXME
+		/* FIXME */
 		return -1;
 	}
 #endif
@@ -228,21 +227,22 @@ void* fun_fan_in(void* arg)
         struct chan* tgt;
         int num = 0;
         
-        // Block all signals
+        /* Block all signals */
         sigfillset(&sigset);
         pthread_sigmask(SIG_BLOCK, &sigset, NULL);
         sigemptyset(&sigset);
         sigaddset(&sigset, SIGUSR1);
         pthread_sigmask(SIG_UNBLOCK, &sigset, NULL);
         
-        // Install dummy handler so we can abort chan_select
+        /* Install dummy handler so we can abort chan_select */
         sa.sa_handler = &sig_noop;
         sa.sa_flags = 0;
         sigfillset(&sa.sa_mask);
-        // Sigaction virtally fails only on invalid signals, so skip error check
+        /* Sigaction virtally fails only on invalid signals, so skip error 
+           check */
         sigaction(SIGUSR1, &sa, NULL);
 
-        // first chanel is target
+        /* first chanel is target */
         tgt = chans[0];
         for (int i = 1; ; i++)
         {
@@ -280,11 +280,11 @@ void* fun_fan_out(void* arg)
         struct chan* src;
         int num = 0;
         
-        // Block all signals
+        /* Block all signals */
         sigfillset(&sigset);
         pthread_sigmask(SIG_BLOCK, &sigset, NULL);
 
-        // first chanel is source
+        /* first chanel is source */
         src = chans[0];
         for (int i = 1; ; i++)
         {
@@ -313,12 +313,12 @@ void* fun_fan_out(void* arg)
         return NULL;
 }
 
-// Do nothing, only needed to be able to catch SIG_USR1 so we can wake
-// up blocking thread in fan_in.
+/* Do nothing, only needed to be able to catch SIG_USR1 so we can wake
+   up blocking thread in fan_in. */
 void sig_noop(int signum)
 {
-        // Really stupid code. But's here just to trick compiler from
-        // generating warning on signum not used.
+        /* Really stupid code. But's here just to trick compiler from
+           generating warning on signum not used. */
         if (signum == SIGUSR1)
         {
                 return;

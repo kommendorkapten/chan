@@ -17,7 +17,7 @@ struct chan;
 extern struct chan* chan_create(void);
 
 /**
- * Destroye the channel.
+ * Destroy the channel.
  * Any behavior of subsequent read/write is undefined.
  */
 extern void chan_destroy(struct chan*);

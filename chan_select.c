@@ -14,7 +14,7 @@ int chan_read(struct chan* c, struct chan_msg* m, int timeout)
 	int ready;
 	int result = EAGAIN;
 
-	// Timeout is in milliseconds
+	/* Timeout is in milliseconds */
 	if (timeout < 0)
 	{
 		ptv = NULL;
@@ -29,9 +29,9 @@ int chan_read(struct chan* c, struct chan_msg* m, int timeout)
 	FD_ZERO(&fds);
 	FD_SET(c->fds[READ_FD], &fds);
 	ready = select(c->fds[READ_FD] + 1, 
-		       &fds, // Read fds
-		       NULL,   // write fds
-		       NULL,   // error fds
+		       &fds, /* read fds */
+		       NULL, /* write fds */
+		       NULL, /* error fds */
 		       ptv);
 	if (ready > 0)
 	{
@@ -77,7 +77,7 @@ int chan_select(struct chan** c,
 	}
 	else
 	{
-		// Timeout is in milliseconds
+		/* Timeout is in milliseconds */
 		tv.tv_sec = timeout / 1000;
 		tv.tv_usec = (timeout - tv.tv_sec * 1000) * 1000;
 		ptv = &tv;
@@ -99,11 +99,11 @@ int chan_select(struct chan** c,
                 int done = 0;
                 int possible_read = 0;
 
-                // TODO decrement timeout
+                /* TODO decrement timeout */
                 ready = select(nfds + 1, 
-                               &fds, // Read fds
-                               NULL,   // write fds
-                               NULL,   // error fds
+                               &fds, /* read fds */
+                               NULL, /* write fds */
+                               NULL, /* error fds */
                                ptv);
 
                 if (ready == 0)
@@ -129,12 +129,13 @@ int chan_select(struct chan** c,
                                 }
                                 else if (ret == EBADF)
                                 {
-                                        // channel is closed
+                                        /* channel is closed */
                                         continue;
                                 }
                                 else if (ret == EAGAIN)
                                 {
-                                        // Data got stolen by some other reader.
+                                        /* Data got stolen by 
+                                           some other reader. */
                                         possible_read = 1;
                                 }
                         }

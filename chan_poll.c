@@ -14,7 +14,7 @@ int chan_read(struct chan* c, struct chan_msg* m, int timeout)
 	pfd.fd = c->fds[READ_FD];
 	pfd.events = POLLIN | POLLHUP;
 
-        // TODO Update timeout if poll is restarted
+        /* TODO Update timeout if poll is restarted */
         ready = poll(&pfd, 1, timeout);
         if (ready < 0)
         {
@@ -58,7 +58,7 @@ int chan_select(struct chan** c,
 		int done = 0;
                 int possible_read = 0;
 
-                // TODO decrement timeout
+                /* TODO decrement timeout */
 		ready = poll(pfd, nc, timeout);
 		if (ready < 0)
 		{
@@ -90,14 +90,14 @@ int chan_select(struct chan** c,
                         }
                         else if (ret == EBADF)
 			{
-				// Channel is closed. Which is strange
+				/* Channel is closed. Which is strange */
 				continue;
 			}
 			else if (errno == EAGAIN)
 			{
-				// Someone stole our data.
-				// Try to read from other channels,
-				// if none succeeds, start over poll loop.
+				/* Someone stole our data.
+                                   Try to read from other channels,
+                                   if none succeeds, start over poll loop. */
 				possible_read = 1;
 			}
 		}
