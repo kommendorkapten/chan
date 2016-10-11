@@ -14,7 +14,7 @@ struct chan
         pthread_t* fan_in;
         int fds[2];
 #ifdef MT_SAFE
-        lock l;
+        struct lock* l;
 #endif
 };
 
