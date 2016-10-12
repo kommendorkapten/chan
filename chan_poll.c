@@ -20,11 +20,11 @@ int chan_read(struct chan* c, struct chan_msg* m, int timeout)
         {
                 result = -1;
         }
-        if (ready == 0)
+        else if (ready == 0)
         {
                 result = EAGAIN;
         }
-        if (pfd.revents & POLLIN) 
+        else if (pfd.revents & POLLIN) 
         {
                 result = read_msg(c, m);
         }
