@@ -8,6 +8,12 @@
 #include <errno.h>
 #include <signal.h>
 
+#if EVENT_POLL == 1
+# include "chan_poll.h"
+#else
+# include "chan_select.h"
+#endif
+
 /* TODO: Better channel handling on select (remove closed etc) */
 
 static void* fun_fan_in(void*);
@@ -324,4 +330,23 @@ static void sig_noop(int signum)
                 return;
         }
         return;
+}
+
+int chan_read(struct chan* c, struct chan_msg* m, int to)
+{
+#if EVENT_POLL == 1
+        return chan_poll_read(c, m, to);
+#else
+        return chan_select_read(c, m, to);
+#endif        
+}
+
+
+int chan_select(struct chan** c, unsigned int nc, struct chan_msg* m, int to)
+{
+#if EVENT_POLL == 1
+        return chan_poll_select(c, nc, m, to);
+#else
+        return chan_select_select(c, nc, m, to);
+#endif        
 }

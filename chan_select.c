@@ -6,7 +6,7 @@
 #include <sys/time.h>
 #include <errno.h>
 
-int chan_read(struct chan* c, struct chan_msg* m, int timeout)
+int chan_select_read(struct chan* c, struct chan_msg* m, int timeout)
 {
 	fd_set fds;
 	struct timeval tv;
@@ -59,7 +59,7 @@ int chan_read(struct chan* c, struct chan_msg* m, int timeout)
 	return result;
 }
 
-int chan_select(struct chan** c,
+int chan_select_select(struct chan** c,
 		unsigned int nc,
 		struct chan_msg* m,
 		int timeout)

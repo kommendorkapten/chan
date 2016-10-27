@@ -1,5 +1,8 @@
+# Chose event mechanism (poll and select are supported)
+EVENT_POLL=1
+
 CC=gcc
-CFLAGS=-m64 -DMT_SAFE -I/usr/local/include
+CFLAGS=-m64 -DMT_SAFE -I/usr/local/include -DEVENT_POLL=$(EVENT_POLL)
 LFLAGS += -lpthread 
 UNAME=$(shell uname -s)
 
@@ -24,12 +27,9 @@ CFLAGS += -mt -v
 endif
 endif
 
-# Chose event mechanism (poll and select are supported)
-EVENT_M=poll
-
 OBJDIR=obj
 BINDIR=bin
-RAWOBJS=chan.o chan_$(EVENT_M).o lock.o
+RAWOBJS=chan.o chan_poll.o chan_select.o lock.o
 OBJS=$(RAWOBJS:%=$(OBJDIR)/%)
 DIRS=$(OBJDIR) $(BINDIR)
 lint_deps=chan.c lock.c chan_poll.c chan_select.c
