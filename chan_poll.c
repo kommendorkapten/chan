@@ -1,7 +1,5 @@
 #include "chan.h"
 #include "chan_def.h"
-#include <stdio.h>
-#include <unistd.h>
 #include <poll.h>
 #include <errno.h>
 
@@ -31,6 +29,10 @@ int chan_read(struct chan* c, struct chan_msg* m, int timeout)
         else if (pfd.revents & POLLHUP)
         {
                 result = EBADF;
+        }
+        else
+        {
+                result = -1;
         }
 
 	return result;

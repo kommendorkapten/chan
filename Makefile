@@ -1,6 +1,6 @@
 CC=gcc
-CFLAGS=-m64 -O2 -DMT_SAFE -I/usr/local/include
-LFLAGS += -lpthread -L/usr/local/lib -lscut
+CFLAGS=-m64 -DMT_SAFE -I/usr/local/include
+LFLAGS += -lpthread 
 UNAME=$(shell uname -s)
 
 # Default to c99 on Solaris
@@ -11,13 +11,16 @@ endif
 
 # Configure stuff based on compiler
 ifeq ($(CC), gcc)
-CFLAGS += -W -Wall -pedantic -std=c99
+CFLAGS += -W -Wall -pedantic -std=c99 -O2
+else ifeq ($(CC), c99)
+CFLAGS += -v -xO2
 endif
+
 
 # Configure based on OS
 ifeq ($(UNAME), SunOS)
 ifeq ($(CC), c99)
-CFLAGS += -mt 
+CFLAGS += -mt -v
 endif
 endif
 
@@ -29,7 +32,7 @@ BINDIR=bin
 RAWOBJS=chan.o chan_$(EVENT_M).o lock.o
 OBJS=$(RAWOBJS:%=$(OBJDIR)/%)
 DIRS=$(OBJDIR) $(BINDIR)
-lint_deps=chan.c test_channel.c lock.c chan_$(EVENT_M).c 
+lint_deps=chan.c lock.c chan_$(EVENT_M).c 
 exe=$(BINDIR)/test
 bench=$(BINDIR)/bench
 
@@ -50,16 +53,16 @@ test: $(exe)
 	$(exe)
 
 $(exe): test_channel.c $(OBJS)
-	$(CC) $(CFLAGS) -o $@ test_channel.c $(OBJS) $(LFLAGS)
+	$(CC) $(CFLAGS) -o $@ test_channel.c $(OBJS) $(LFLAGS) -L/usr/local/lib -lscut
 
 $(bench): bench_channel.c $(OBJS)
-	@$(CC) $(CFLAGS) -o $@ bench_channel.c $(OBJS) $(LFLAGS)
+	$(CC) $(CFLAGS) -o $@ bench_channel.c $(OBJS) $(LFLAGS)
 
 lint:
-	lint -errfmt=simple -Xc99 -m64 -errchk=%all -Ncheck=%all -Nlevel=3 $(lint_deps)
+	lint -errtags=yes -Xc99 -m64 -errchk=%all -Ncheck=%all -u -m -Nlevel=3 $(lint_deps) -erroff=E_FUNC_RET_ALWAYS_IGNOR,E_SIGN_EXTENSION_PSBL,E_CAST_INT_TO_SMALL_INT,E_FUNC_DECL_VAR_ARG,E_ASGN_RESET
 
 $(OBJDIR)/%.o: %.c
-	@$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(OBJDIR)/*.o $(exe) $(bench)
