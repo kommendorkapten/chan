@@ -20,14 +20,4 @@ struct chan
 
 struct chan_msg;
 
-/**
- * Read one msg from fd.
- * @return
- *     0: Message successfully read.
- *     -1: Error occured.
- *     EBADF: Channel is closed.
- *     EAGAIN: Nothing to read.
- */
-int read_msg(struct chan*, struct chan_msg*) ;
-
 #endif /* __CHAN_DEF_H__ */

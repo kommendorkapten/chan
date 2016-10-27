@@ -32,7 +32,7 @@ BINDIR=bin
 RAWOBJS=chan.o chan_$(EVENT_M).o lock.o
 OBJS=$(RAWOBJS:%=$(OBJDIR)/%)
 DIRS=$(OBJDIR) $(BINDIR)
-lint_deps=chan.c lock.c chan_$(EVENT_M).c 
+lint_deps=chan.c lock.c chan_poll.c chan_select.c
 exe=$(BINDIR)/test
 bench=$(BINDIR)/bench
 

@@ -38,7 +38,7 @@ int chan_read(struct chan* c, struct chan_msg* m, int timeout)
 
 		if (FD_ISSET(c->fds[READ_FD], &fds))
 		{
-                        result = read_msg(c, m);
+                        result = chan_read_msg(c, m);
 		}
 		else 
 		{
@@ -119,7 +119,7 @@ int chan_select(struct chan** c,
                 {
                         if (FD_SET(c[i]->fds[READ_FD], &fds))
                         {
-                                int ret = read_msg(c[i], m);
+                                int ret = chan_read_msg(c[i], m);
 
                                 if (ret == 0)
                                 {

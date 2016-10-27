@@ -24,7 +24,7 @@ int chan_read(struct chan* c, struct chan_msg* m, int timeout)
         }
         else if (pfd.revents & POLLIN) 
         {
-                result = read_msg(c, m);
+                result = chan_read_msg(c, m);
         }
         else if (pfd.revents & POLLHUP)
         {
@@ -82,7 +82,7 @@ int chan_select(struct chan** c,
 				continue;
 			}
 
-                        ret = read_msg(c[i], m);
+                        ret = chan_read_msg(c[i], m);
                         
                         if (ret == 0)
                         {
